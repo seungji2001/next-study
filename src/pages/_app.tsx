@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/styles/globals.css"; //기본 스타일
 import type { AppProps } from "next/app";
 
 //Component -> page
