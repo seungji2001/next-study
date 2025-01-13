@@ -1,6 +1,9 @@
-.h1{
-    color:red;
-}
-.h2{
-    color:blue;
-}
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .container h3 {
+    margin-bottom: 0px;
+  }
