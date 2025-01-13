@@ -4,13 +4,13 @@ import style from "./index.module.css" //import css 안된다. //객체로 변�
 import { ReactNode, useEffect } from "react";
 import books from '@/mock/books.json'//@ -> src밑에
 import BookItem from "@/components/book-item";
-import { InferGetServerSidePropsType } from "next";
+import { InferGetServerSidePropsType, InferGetStaticPropsType } from "next";
 import fetchBooks from "@/lib/fetch-books";
 import fetchRandomBooks from "@/lib/fetch-random-books";
 
 //SSR로 만들기
 //약속된 함수이다.
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   //컴포넌트보다 먼저 실행되어, 컴포넌트에 필요한 데이터 불러오는 함수
   //객체를 반환해야한다 props:{} 형태로 
   //component에서 사용이 가능하다 
@@ -37,7 +37,7 @@ export const getServerSideProps = async () => {
 export default function Home({
   allBooks,
   recoBooks
-}:InferGetServerSidePropsType<typeof getServerSideProps>) { //default이다.
+}:InferGetStaticPropsType<typeof getStaticProps>) { //default이다.
 
   //윈도우 핸들링 하려면 useEffect를 사용한다
   useEffect(() => {
