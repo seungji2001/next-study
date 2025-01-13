@@ -1,8 +1,9 @@
 import { Html, Head, Main, NextScript } from "next/document";
 
+//모든 탭에 적용될 html코드
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html lang="kr">
       <Head />
       <body>
         <Main />
