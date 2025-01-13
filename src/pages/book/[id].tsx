@@ -1,6 +1,9 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { GetServerSidePropsContext, GetStaticProps, GetStaticPropsContext, InferGetServerSidePropsType, InferGetStaticPropsType } from "next";
 import style from "./[id].module.css"
 import fetchOneBook from "@/lib/fetch-one-book";
+import { useRouter } from "next/router";
+
+//동적 경로이기 때문에 경로를 우선 정의해야한다 -> getStaticPaths -> getStaticProps
 const mockData = {
     "id": 1,
     "title": "한 입 크기로 잘라 먹는 리액트",
@@ -9,14 +12,35 @@ const mockData = {
     "author": "이정환",
     "publisher": "프로그래밍인사이트",
     "coverImgUrl": "https://shopping-phinf.pstatic.net/main_3888828/38888282618.20230913071643.jpg"
-  }
+}
 
-export const getServerSideProps = async(
-    context:GetServerSidePropsContext
+export const getStaticPaths = () =>{
+    return {
+        paths: [
+            {params: {id:"1"}},
+            {params: {id:"2"}},
+            {params: {id:"3"}},
+        ],
+        //대체, 대비책, 보험 book/4 의 대비책
+        // fallback: "blocking", //path가 없어도 자동으로 추가 생성한다 (ssr + ssg)
+        //fallback: false //not found ->404로 이동하게 된다.
+        fallback:true //props없는 페이지 반환 -> props계산 이후 props만 렌더링하게 된다
+    }
+}
+
+export const getStaticProps = async(
+    context:GetStaticPropsContext
 ) => {
 
     const id = context.params!.id; //Number type으로 형 변환
     const book = await fetchOneBook(Number(id))
+
+    //만약 문제가 발생하였을때 문구가 아닌, not found 페이지로 이동시키고 싶을 경우
+    if(!book){
+        return {
+            notFound:true,
+        }
+    }
 
     return {
         props:{book},
@@ -25,8 +49,10 @@ export const getServerSideProps = async(
 
 //optional catch all segment -> 루트 경로도 대응한다 
 //http://localhost:3000/book/13/13/13/13
-export default function Page({book} : InferGetServerSidePropsType<typeof getServerSideProps>)
+export default function Page({book} : InferGetStaticPropsType<typeof getStaticProps>)
 {
+    const router = useRouter();
+    if(router.isFallback) return "로딩중입니다.";
     if(!book) return "문제가 발생했습니다. 다시 시도해주세요";
 
     const {
