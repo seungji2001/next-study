@@ -2,6 +2,7 @@ import { GetServerSidePropsContext, GetStaticProps, GetStaticPropsContext, Infer
 import style from "./[id].module.css"
 import fetchOneBook from "@/lib/fetch-one-book";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 //동적 경로이기 때문에 경로를 우선 정의해야한다 -> getStaticPaths -> getStaticProps
 const mockData = {
@@ -46,13 +47,28 @@ export const getStaticProps = async(
         props:{book},
     };
 };
+//이 경우 메타 태그들은 빠져있다
 
 //optional catch all segment -> 루트 경로도 대응한다 
 //http://localhost:3000/book/13/13/13/13
 export default function Page({book} : InferGetStaticPropsType<typeof getStaticProps>)
 {
     const router = useRouter();
-    if(router.isFallback) return "로딩중입니다.";
+    if(router.isFallback) {
+      return (
+        <>
+          <Head>
+          <title>한입북스</title>
+        <meta property="og:image" content="/thumnail.png"/>
+        <meta property="og:title" content="한입북스"></meta>
+        <meta
+        property="og:description"
+        content="한입북스에 등록된 도서들을 만나보세요"
+        />
+          </Head>
+        </>
+      )
+    }
     if(!book) return "문제가 발생했습니다. 다시 시도해주세요";
 
     const {
@@ -66,7 +82,17 @@ export default function Page({book} : InferGetStaticPropsType<typeof getStaticPr
     } = book;
   
     return (
-      <div className={style.container}>
+      <>
+          <Head>
+        <title>{title}</title>
+        <meta property="og:image" content={coverImgUrl}/>
+        <meta property="og:title" content={title}></meta>
+        <meta
+        property="og:description"
+        content={description}
+        />
+            </Head>
+            <div className={style.container}>
         <div
           className={style.cover_img_container}
           style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -80,5 +106,6 @@ export default function Page({book} : InferGetStaticPropsType<typeof getStaticPr
         </div>
         <div className={style.description}>{description}</div>
       </div>
+      </>
     );
   }

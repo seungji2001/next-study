@@ -7,6 +7,7 @@ import { GetServerSidePropsContext, GetStaticPropsContext, InferGetServerSidePro
 import fetchBooks from "@/lib/fetch-books";
 import { get } from "http";
 import { BookData } from "@/types";
+import Head from "next/head";
 
 // export const getStaticProps = async (context: GetStaticPropsContext) =>{
     
@@ -41,11 +42,23 @@ export default function Page(){
     },[q]);
 
     return(
-        <div>
+        <>
+            <Head>
+        <title>한입북스</title>
+        <meta property="og:image" content="/thumnail.png"/>
+        <meta property="og:title" content="한입북스"></meta>
+        <meta
+        property="og:description"
+        content="한입북스에 등록된 도서들을 만나보세요"
+        />
+            </Head>
+            <div>
             {books.map((book) => (
                 <BookItem key={book.id} {...book}></BookItem>
             ))}
         </div>
+        </>
+
     )
 }
 //http://localhost:3000/search 로 접근 가능

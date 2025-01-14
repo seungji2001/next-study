@@ -1,12 +1,11 @@
-//css module을 사용하지 
 import SearchableLayout from "@/components/searchable-layout";
 import style from "./index.module.css" //import css 안된다. //객체로 변환하여 호출하는 방향으로 한다
 import { ReactNode, useEffect } from "react";
-import books from '@/mock/books.json'//@ -> src밑에
 import BookItem from "@/components/book-item";
-import { InferGetServerSidePropsType, InferGetStaticPropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 import fetchBooks from "@/lib/fetch-books";
 import fetchRandomBooks from "@/lib/fetch-random-books";
+import Head from "next/head";
 
 //SSR로 만들기
 //약속된 함수이다.
@@ -45,7 +44,17 @@ export default function Home({
   },[])
 
   return (
-    <div className={style.container}>
+    <>
+      <Head>
+        <title>한입북스</title>
+        <meta property="og:image" content="/thumnail.png"/>
+        <meta property="og:title" content="한입북스"></meta>
+        <meta
+        property="og:description"
+        content="한입북스에 등록된 도서들을 만나보세요"
+        />
+      </Head>
+      <div className={style.container}>
       <section>
         <h3>지금 추천하는 도서</h3>
         {recoBooks.map((book) => (
@@ -59,6 +68,7 @@ export default function Home({
         ))}
       </section>
     </div>
+    </>
   );
 }
 
